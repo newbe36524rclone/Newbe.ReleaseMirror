@@ -33,6 +33,15 @@ jobs:
       - name: Init rclone
         run: |
           curl https://rclone.org/install.sh | sudo bash
+
+      - name: test rclone
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          mkdir -p ~/.config/rclone 
+          echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > ~/.config/rclone/rclone.conf
+          rclone config file
+          rclone ls azureblob:/
+
       - name: Init Pipenv CLI and run
         run: |
           cd $GITHUB_WORKSPACE/src
@@ -49,6 +58,4 @@ jobs:
       - name: run rclone
         run: |
           cd $GITHUB_WORKSPACE/src
-          mkdir -p ~/.config/rclone 
-          echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > ~/.config/rclone/rclone.conf
           rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azureblob:/${{ matrix.mirror.target }}
