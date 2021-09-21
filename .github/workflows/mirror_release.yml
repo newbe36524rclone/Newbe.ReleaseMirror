@@ -48,6 +48,16 @@ jobs:
             target: wkhtmltopdf
           - repo: kubernetes/minikube
             target: minikube
+          - repo: rabbitmq/rabbitmq-server
+            target: rabbitmq-server
+          - repo: helm/helm
+            target: helm
+          - repo: yarnpkg/yarn
+            target: yarn
+          - repo: etcd-io/etcd
+            target: etcd
+            
+            
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
