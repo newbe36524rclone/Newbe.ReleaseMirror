@@ -1,0 +1,54 @@
+name: Sync release to azure blob
+
+on:
+  push:
+    branches:
+      - publish
+  schedule:
+    - cron: "0 0 * * MON"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mirror:
+          # - repo: dapr/cli
+          #   target_dir: dapr_cli
+          - repo: Amazing-Favorites/Amazing-Favorites
+            target_dir: Amazing-Favorites
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9" # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified
+
+      - name: Init rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+      - name: Init Pipenv CLI and run
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          export PATH=/home/runner/.local/bin/:$PATH
+          pip install --upgrade pip
+          pip install pipenv
+          pipenv install
+
+      - name: download release
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          pipenv run sync-release -repo ${{ matrix.mirror.repo }} -target_dir ${{ matrix.mirror.target_dir }}
+
+      - name: run rclone
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          mkdir -p ~/.config/rclone 
+          ${{ secrets.RCLON_CONFIG }} | base64 --decode > ~/.config/rclone/rclone.conf
+          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target_dir }} azureblob:/${{ matrix.mirror.repo }}
