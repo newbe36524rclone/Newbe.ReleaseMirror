@@ -40,12 +40,6 @@ jobs:
             target: ShareX
           - repo: Wox-launcher/Wox
             target: Wox
-          - repo: jaegertracing/jaeger
-            target: jaeger
-          - repo: gohugoio/hugo
-            target: hugo
-          - repo: PowerShell/PowerShell
-            target: PowerShell
           - repo: microsoft/winget-cli
             target: winget-cli
           - repo: dotnetcore/FastGithub
