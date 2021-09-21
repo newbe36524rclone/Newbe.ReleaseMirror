@@ -38,7 +38,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           mkdir -p ~/.config/rclone 
-          echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > ~/.config/rclone/rclone.conf
+          echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > rclone.conf
+          cp rclone.conf ~/.config/rclone/rclone.conf
           rclone config file
           rclone ls azureblob:/
 
