@@ -1,0 +1,98 @@
+name: Sync release to azure blob
+
+on:
+  push:
+    branches:
+      - publish
+  schedule:
+    - cron: "0 0 * * MON"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mirror:
+          - repo: Amazing-Favorites/Amazing-Favorites
+            target: Amazing-Favorites
+          - repo: dapr/cli
+            target: dapr_cli
+          - repo: dapr/dapr
+            target: dapr_dapr
+          - repo: gitextensions/gitextensions
+            target: gitextensions
+          - repo: NickeManarin/ScreenToGif
+            target: ScreenToGif
+          - repo: microsoft/PowerToys
+            target: PowerToys
+          - repo: mikefarah/yq
+            target: yq
+          - repo: docmirror/dev-sidecar
+            target: dev-sidecar
+          - repo: HearthSim/Hearthstone-Deck-Tracker
+            target: Hearthstone-Deck-Tracker
+          - repo: Palakis/obs-ndi
+            target: obs-ndi
+          - repo: summershrimp/obs-auto-subtitle
+            target: obs-auto-subtitle
+          - repo: ShareX/ShareX
+            target: ShareX
+          - repo: Wox-launcher/Wox
+            target: Wox
+          - repo: jaegertracing/jaeger
+            target: jaeger
+          - repo: gohugoio/hugo
+            target: hugo
+          - repo: PowerShell/PowerShell
+            target: PowerShell
+          - repo: microsoft/winget-cli
+            target: winget-cli
+          - repo: dotnetcore/FastGithub
+            target: FastGithub
+          - repo: wkhtmltopdf/wkhtmltopdf
+            target: wkhtmltopdf
+          - repo: kubernetes/minikube
+            target: minikube
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9" # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified
+
+      - name: Init rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+
+      - name: test rclone
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          mkdir -p ~/.config/rclone 
+          echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > rclone.conf
+          cp rclone.conf ~/.config/rclone/rclone.conf
+          rclone config file
+          rclone ls azure:/
+
+      - name: Init Pipenv CLI and run
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          export PATH=/home/runner/.local/bin/:$PATH
+          pip install --upgrade pip
+          pip install pipenv
+          pipenv install
+
+      - name: download release
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          pipenv run inv sync-release --repo ${{ matrix.mirror.repo }} --target ${{ matrix.mirror.target }}
+
+      - name: run rclone
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azure:/release/${{ matrix.mirror.target }}
