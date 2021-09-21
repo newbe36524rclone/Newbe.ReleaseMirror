@@ -40,5 +40,5 @@ def download_releases(base_dir, repo, target_dir):
 
 
 @task
-def sync_release(c, base_dir=None, repo=None, target_dir=None):
-    download_releases(base_dir, repo, target_dir)
+def sync_release(c, base_dir=None, repo=None, target=None):
+    download_releases(base_dir, repo, target)

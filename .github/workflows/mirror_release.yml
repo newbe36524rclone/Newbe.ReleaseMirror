@@ -15,9 +15,9 @@ jobs:
       matrix:
         mirror:
           # - repo: dapr/cli
-          #   target_dir: dapr_cli
+          #   target: dapr_cli
           - repo: Amazing-Favorites/Amazing-Favorites
-            target_dir: Amazing-Favorites
+            target: Amazing-Favorites
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
@@ -44,11 +44,11 @@ jobs:
       - name: download release
         run: |
           cd $GITHUB_WORKSPACE/src
-          pipenv run inv sync-release -repo ${{ matrix.mirror.repo }} -target_dir ${{ matrix.mirror.target_dir }}
+          pipenv run inv sync-release --repo ${{ matrix.mirror.repo }} --target ${{ matrix.mirror.target }}
 
       - name: run rclone
         run: |
           cd $GITHUB_WORKSPACE/src
           mkdir -p ~/.config/rclone 
           ${{ secrets.RCLON_CONFIG }} | base64 --decode > ~/.config/rclone/rclone.conf
-          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target_dir }} azureblob:/${{ matrix.mirror.repo }}
+          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azureblob:/${{ matrix.mirror.repo }}
