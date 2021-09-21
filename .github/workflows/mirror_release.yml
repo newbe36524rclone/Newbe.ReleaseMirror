@@ -59,4 +59,4 @@ jobs:
       - name: run rclone
         run: |
           cd $GITHUB_WORKSPACE/src
-          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azure:/${{ matrix.mirror.target }}
+          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azure:/release/${{ matrix.mirror.target }}
