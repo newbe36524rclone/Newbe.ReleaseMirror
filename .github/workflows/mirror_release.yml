@@ -41,7 +41,7 @@ jobs:
           echo ${{ secrets.RCLON_CONFIG }} | base64 --decode > rclone.conf
           cp rclone.conf ~/.config/rclone/rclone.conf
           rclone config file
-          rclone ls azureblob:/
+          rclone ls azure:/
 
       - name: Init Pipenv CLI and run
         run: |
@@ -59,4 +59,4 @@ jobs:
       - name: run rclone
         run: |
           cd $GITHUB_WORKSPACE/src
-          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azureblob:/${{ matrix.mirror.target }}
+          rclone copy $GITHUB_WORKSPACE/release/${{ matrix.mirror.target }} azure:/${{ matrix.mirror.target }}
