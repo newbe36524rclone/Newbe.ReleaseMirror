@@ -14,10 +14,46 @@ jobs:
       fail-fast: false
       matrix:
         mirror:
-          # - repo: dapr/cli
-          #   target: dapr_cli
           - repo: Amazing-Favorites/Amazing-Favorites
             target: Amazing-Favorites
+          - repo: dapr/cli
+            target: dapr_cli
+          - repo: dapr/dapr
+            target: dapr_dapr
+          - repo: gitextensions/gitextensions
+            target: gitextensions
+          - repo: NickeManarin/ScreenToGif
+            target: ScreenToGif
+          - repo: microsoft/PowerToys
+            target: PowerToys
+          - repo: mikefarah/yq
+            target: yq
+          - repo: docmirror/dev-sidecar
+            target: dev-sidecar
+          - repo: HearthSim/Hearthstone-Deck-Tracker
+            target: Hearthstone-Deck-Tracker
+          - repo: Palakis/obs-ndi
+            target: obs-ndi
+          - repo: summershrimp/obs-auto-subtitle
+            target: obs-auto-subtitle
+          - repo: ShareX/ShareX
+            target: ShareX
+          - repo: Wox-launcher/Wox
+            target: Wox
+          - repo: jaegertracing/jaeger
+            target: jaeger
+          - repo: gohugoio/hugo
+            target: hugo
+          - repo: PowerShell/PowerShell
+            target: PowerShell
+          - repo: microsoft/winget-cli
+            target: winget-cli
+          - repo: dotnetcore/FastGithub
+            target: FastGithub
+          - repo: wkhtmltopdf/wkhtmltopdf
+            target: wkhtmltopdf
+          - repo: kubernetes/minikube
+            target: minikube
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
