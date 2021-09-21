@@ -44,7 +44,7 @@ jobs:
       - name: download release
         run: |
           cd $GITHUB_WORKSPACE/src
-          pipenv run sync-release -repo ${{ matrix.mirror.repo }} -target_dir ${{ matrix.mirror.target_dir }}
+          pipenv run inv sync-release -repo ${{ matrix.mirror.repo }} -target_dir ${{ matrix.mirror.target_dir }}
 
       - name: run rclone
         run: |
